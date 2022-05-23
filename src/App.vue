@@ -1,102 +1,97 @@
 <template>
-  <div id="app">
-    <h2>
-      {{ title }}<span class="hl">{{ span }}</span>
-    </h2>
+  <div id=app>
+    
 
-    <div class="controls">
-      <label for="spacing">{{ Spacing }}</label>
-      <input
-        id="spacing"
-        type="range"
-        name="spacing"
-        min="10"
-        max="200"
-        value="10"
-        data-sizing="px"
-        v-on:change= 'handleUpdate'
-      />
-        <!-- v-on:mousemove= 'handleUpdate' -->
-
-      <label for="blur">{{ blur }}:</label>
-      <input
-        id="blur"
-        type="range"
-        name="blur"
-        min="0"
-        max="25"
-        value="10"
-        data-sizing="px"
-      />
-
-      <label for="base">{{ color }}</label>
-      <input id="base" type="color" name="base" value="#ffc600" />
+    <div class="wrapper">
+      <h2>TO DO list</h2>
+      <p>代辦項目</p>
+      <ul class="plates">
+        <li>Loading Tapas...</li>
+      </ul>
+      <p>完成項目</p>
+      <ul class="plates">
+        <li>Loading Tapas...</li>
+      </ul>
+      <form class="add-items">
+        <input type="text" name="item" placeholder="Item Name" required>
+        <input type="submit" value="+項目">
+      </form>
     </div>
-
-    <img :src="src" />
   </div>
 </template>
-
 <script>
-export default {
-  name: "App",
-  data() {
-    return {
-      src: "https://source.unsplash.com/7bwQXzbF6KE/800x500",
-      title: "Update CSS Variables with",
-      span: "JSJSJS",
-      Spacing: "Spacing:Spacing:",
-      blur: "BlurBlur",
-      color: "Base ColorColor",
-    };
-  },
-  methods: {
-    handleUpdate(){
-      
-      let input = document.querySelector('.controls #spacing')
-      console.log(input)
-      const suffix = input.dataset.sizing || '';
-      document.documentElement.style.setProperty(`--${input.name}`, input.value + suffix);
-    }
-  },
-};
+
 </script>
-
 <style>
-:root {
-  --base: #ffc600;
-  --spacing: 10px;
-  --blur: 10px;
-}
-
-img {
-  padding: var(--spacing);
-  background: var(--base);
-  filter: blur(var(--blur));
-}
-
-.hl {
-  color: var(--base);
-}
-
-/*
-    misc styles, nothing to do with CSS variables
-  */
-
-body {
-  text-align: center;
-  background: #193549;
-  color: white;
-  font-family: "helvetica neue", sans-serif;
-  font-weight: 100;
-  font-size: 50px;
-}
-
-.controls {
-  margin-bottom: 50px;
-}
-
-input {
-  width: 100px;
-}
+html {
+    box-sizing: border-box;
+    background-size: cover;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-family: Futura, "Trebuchet MS", Arial, sans-serif;
+  }
+  
+  *,
+  *:before,
+  *:after {
+    box-sizing: inherit;
+  }
+  
+  
+  
+  .wrapper {
+    padding: 20px;
+    max-width: 350px;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  h2 {
+    text-align: center;
+    margin: 0;
+    font-weight: 200;
+  }
+  .plates {
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    list-style: none;
+  }
+  .plates li {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    padding: 10px 0;
+    font-weight: 100;
+    display: flex;
+  }
+  
+  .plates label {
+    flex: 1;
+    cursor: pointer;
+  }
+  
+  .plates input {
+    display: none;
+  }
+  
+  .plates input + label:before {
+    content: "1";
+    margin-right: 10px;
+  }
+  
+  .plates input:checked + label:before {
+    content: "2 ";
+  }
+  
+  .add-items {
+    margin-top: 20px;
+  }
+  
+  .add-items input {
+    padding: 10px;
+    outline: 0;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
 </style>
