@@ -3,16 +3,16 @@
     
 
     <div class="wrapper">
-      <h2>TO DO list</h2>
-      <p>代辦項目</p>
-      <ul class="plates">
-        <li>Loading Tapas...</li>
+      <h2>{{ title }}</h2>
+      <p>{{ Upcoming }}</p>
+      <ul class="plates" v-on:click= "toggleDone($event)">
+        <li>{{ add }}</li>
       </ul>
-      <p>完成項目</p>
-      <ul class="plates">
-        <li>Loading Tapas...</li>
+      <p>{{ Finish }}</p>
+      <ul class="plates" v-on:click= "toggleDone($event)">
+        <li>{{ add }}</li>
       </ul>
-      <form class="add-items">
+      <form class="add-items" v-on:submit= "addItem($event)">
         <input type="text" name="item" placeholder="Item Name" required>
         <input type="submit" value="+項目">
       </form>
@@ -20,7 +20,61 @@
   </div>
 </template>
 <script>
+  export default {
+    name: 'App',
+    data(){
+      return{
+        title:'TO DO list',
+        Upcoming:'代辦項目',
+        Finish:'完成項目',
+        add:'add...',
 
+      }
+    },
+    methods:{
+          addItem: function(e) {
+          let from = document.querySelector('.add-items')
+          e.preventDefault();
+          const text = (from.querySelector('[name=item]')).value;
+          
+          const item = {
+            text: text,
+            done: false
+          };
+          let itemsList = document.querySelector('.plates');
+          let items = JSON.parse(localStorage.getItem('items')) || [];
+          items.push(item); 
+          this.populateList(items, itemsList); 
+          localStorage.setItem('items', JSON.stringify(items));
+          console.log( JSON.stringify(items));
+          
+          from.reset();
+        },
+        populateList: function (plates = [], platesList) {
+        platesList.innerHTML = plates.map((plate, i) => {   
+       // console.log(i)
+          return `
+            <li>                                                    
+              <input type="checkbox" data-index=${i} id="item${i}" ${plate.done ? 'checked' : ''} />
+              <label for="item${i}">${plate.text}</label>
+            </li>
+          `;
+          }).join('');
+        },
+        toggleDone :function (e){
+          let itemsList = document.querySelector('.plates');
+          let items = JSON.parse(localStorage.getItem('items')) || [];
+          if (!e.target.matches('input')) return;
+          const el = e.target;
+          const index = el.dataset.index;
+          items[index].done = !items[index].done;
+          localStorage.setItem('items', JSON.stringify(items));
+          (items, itemsList);
+        }
+      
+    },
+  }
+  
 </script>
 <style>
 html {
