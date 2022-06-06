@@ -46,74 +46,32 @@
     },
     methods:{
       newfunction: function(index){
-        console.log('newfunction',index)
-        // let itemsList = document.querySelector('.plates');
-        // const newclick = document.querySelectorAll('label');
-        // newclick.forEach((label,index)=>{
-          //label.addEventListener('click',()=>{
-
-            // const items = JSON.parse(localStorage.getItem('items')) || [];
-
-            const newItems = this.items.filter((item,currentIndex)=>{
-              return index != currentIndex   
-            })
-            this.items = newItems;
-            //this.populateList(newItems, itemsList);
-            localStorage.setItem('items', JSON.stringify(newItems));
-            //this.newfunction()
+          const newItems = this.items.filter((item,currentIndex)=>{
+            return index != currentIndex   
+          })
+          this.items = newItems;
+          localStorage.setItem('items', JSON.stringify(newItems));
+        
       },
       addItem: function(e) {
-        // let itemsList = document.querySelector('.plates');
-        // const items = JSON.parse(localStorage.getItem('items')) || []; //原本的寫法可以先讀這段 vue的版本不行   
         e.preventDefault();
-        console.log(e)
         let from = document.querySelector('.add-items')
-          
         const text = (from.querySelector('[name=item]')).value;
-          
         const item = {
           message: text,
           done: false 
         };
-          
         this.items.push(item); 
-        // this.populateList(items, itemsList); 
         localStorage.setItem('items', JSON.stringify(this.items));
         console.log( JSON.stringify(this.items));
-          
         from.reset();
-        // this.newfunction()
       },
-      // populateList: function (plates = [], platesList) {
-      //   platesList.innerHTML = plates.map((plate, i) => {   
-        
-      //   return `
-      //     <li>
-      //       <input type="checkbox" data-index=${i} id="item${i}" ${plate.done ? 'checked' : ''} />
-      //       <label for="item${i}">${plate.text}</label>
-      //       <button>X</button>                                                  
-      //     </li>
-      //   `;
-      //   }).join('');
-          
-      // },
+      
       toggleDone :function (index){
-        console.log(index)
-        // let itemsList = document.querySelector('.plates li');
-        // let items = JSON.parse(localStorage.getItem('items')) || [];
-        // if (!e.target.matches('input')) return;
-        // const el = e.target;
-        // const index = el.dataset.index;
         this.items[index].done = !this.items[index].done;
-        console.log(this.items)
-        
         localStorage.setItem('items', JSON.stringify(this.items));
-        //  (items, itemsList);
       },
-      inputclick :function(e){
-        //let input = document.querySelector('input')
-        console.log(e.target)
-      },
+      
     }
   }
   
