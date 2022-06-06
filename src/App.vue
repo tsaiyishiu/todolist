@@ -5,11 +5,20 @@
     <div class="wrapper">
       <h2>{{ title }}</h2>
       <p>{{ Upcoming }}</p>
-      <ul class="plates" v-on:click="toggleDone($event);inputclick($event)">
-        <li>{{ add }} </li>
+      <ul class="plates" v-if="items.length === 0">
+        <li>{{ add }}</li>
+      </ul>
+      <ul class="plates" v-else>
+        <li v-for="(item,index) in items" :key="index + 'items'">
+            <input type="checkbox" :data-index="'data-index'+index" :id="'items'+index"
+              :checked="item.done" />
+            <label v-on:click="toggleDone(index);inputclick($event)"
+              :for="'item'+index">{{item.message}}</label>
+            <button v-on:click='newfunction(index)'>X</button>
+        </li>
       </ul>
       <p>{{ Finish }}</p>
-      <ul class="plates" v-on:click= "toggleDone($event)">
+      <ul class="plates">
         <li>{{ add }}</li>
       </ul>
       <form class="add-items" v-on:submit= "addItem($event)">
@@ -28,36 +37,34 @@
         Upcoming:'代辦項目',
         Finish:'完成項目',
         add:'add...',
-
-    
+        items:[]
       }
     },
-    mounted(){
-      console.log('123')
-      this.newfunction()
-      
+    created(){
+      const items = JSON.parse(localStorage.getItem('items')) || []
+      this.items = items
     },
     methods:{
-      
-      newfunction: function(){
-        console.log('newfunction')
-        let itemsList = document.querySelector('.plates');
-        const newclick = document.querySelectorAll('label');
-        newclick.forEach((label,index)=>{
-          label.addEventListener('click',()=>{
-            const items = JSON.parse(localStorage.getItem('items')) || [];
-            const newItems = items.filter((item,currentIndex)=>{
+      newfunction: function(index){
+        console.log('newfunction',index)
+        // let itemsList = document.querySelector('.plates');
+        // const newclick = document.querySelectorAll('label');
+        // newclick.forEach((label,index)=>{
+          //label.addEventListener('click',()=>{
+
+            // const items = JSON.parse(localStorage.getItem('items')) || [];
+
+            const newItems = this.items.filter((item,currentIndex)=>{
               return index != currentIndex   
             })
-            this.populateList(newItems, itemsList);
+            this.items = newItems;
+            //this.populateList(newItems, itemsList);
             localStorage.setItem('items', JSON.stringify(newItems));
-            this.newfunction()
-          })
-        })
+            //this.newfunction()
       },
       addItem: function(e) {
-        let itemsList = document.querySelector('.plates');
-        const items = JSON.parse(localStorage.getItem('items')) || []; //原本的寫法可以先讀這段 vue的版本不行   
+        // let itemsList = document.querySelector('.plates');
+        // const items = JSON.parse(localStorage.getItem('items')) || []; //原本的寫法可以先讀這段 vue的版本不行   
         e.preventDefault();
         console.log(e)
         let from = document.querySelector('.add-items')
@@ -65,53 +72,49 @@
         const text = (from.querySelector('[name=item]')).value;
           
         const item = {
-          text: text,
+          message: text,
           done: false 
         };
           
-        items.push(item); 
-        this.populateList(items, itemsList); 
-        localStorage.setItem('items', JSON.stringify(items));
-        console.log( JSON.stringify(items));
+        this.items.push(item); 
+        // this.populateList(items, itemsList); 
+        localStorage.setItem('items', JSON.stringify(this.items));
+        console.log( JSON.stringify(this.items));
           
         from.reset();
-        this.newfunction()
+        // this.newfunction()
       },
-      populateList: function (plates = [], platesList) {
-        platesList.innerHTML = plates.map((plate, i) => {   
+      // populateList: function (plates = [], platesList) {
+      //   platesList.innerHTML = plates.map((plate, i) => {   
         
-        return `
-          <li>
-            <input type="checkbox" data-index=${i} id="item${i}" ${plate.done ? 'checked' : ''} />
-            <label for="item${i}">${plate.text}</label>
-            <button>X</button>                                                  
-          </li>
-        `;
-        }).join('');
+      //   return `
+      //     <li>
+      //       <input type="checkbox" data-index=${i} id="item${i}" ${plate.done ? 'checked' : ''} />
+      //       <label for="item${i}">${plate.text}</label>
+      //       <button>X</button>                                                  
+      //     </li>
+      //   `;
+      //   }).join('');
           
-      },
-      toggleDone :function (e){
-        console.log(e)
-        let itemsList = document.querySelector('.plates');
-        let items = JSON.parse(localStorage.getItem('items')) || [];
-        if (!e.target.matches('input')) return;
-        const el = e.target;
-        const index = el.dataset.index;
-        items[index].done = !items[index].done;
-        localStorage.setItem('items', JSON.stringify(items));
-        (items, itemsList);
+      // },
+      toggleDone :function (index){
+        console.log(index)
+        // let itemsList = document.querySelector('.plates li');
+        // let items = JSON.parse(localStorage.getItem('items')) || [];
+        // if (!e.target.matches('input')) return;
+        // const el = e.target;
+        // const index = el.dataset.index;
+        this.items[index].done = !this.items[index].done;
+        console.log(this.items)
+        
+        localStorage.setItem('items', JSON.stringify(this.items));
+        //  (items, itemsList);
       },
       inputclick :function(e){
-          //let input = document.querySelector('input')
+        //let input = document.querySelector('input')
         console.log(e.target)
       },
-        
-        
-
-      //先抓到勾選的click事件
-      //
-      
-    },
+    }
   }
   
 </script>
