@@ -12,14 +12,23 @@
         <li v-for="(item,index) in items" :key="index + 'items'">
             <input type="checkbox" :data-index="'data-index'+index" :id="'items'+index"
               :checked="item.done" />
-            <label v-on:click="toggleDone(index);inputclick($event)"
+            <label v-on:click="toggleDone(index)"
               :for="'item'+index">{{item.message}}</label>
-            <button v-on:click='newfunction(index)'>X</button>
+            <button v-on:click='deletefunction(index)'>X</button>
         </li>
       </ul>
       <p>{{ Finish }}</p>
       <ul class="plates">
         <li>{{ add }}</li>
+      </ul>
+      <ul class="plates">
+        <li v-for="(item,index) in Finishitems" :key="index + 'Finishitems'">
+           <input type="checkbox" :data-index="'data-index'+index" :id="'items'+index"
+              :checked="item.done" />
+            <label v-on:click="finishHandler()"
+              :for="'item'+index">{{item.message}}</label>
+            <button v-on:click='deletefunction(index)'>X</button>
+        </li>
       </ul>
       <form class="add-items" v-on:submit= "addItem($event)">
         <input type="text" name="item" placeholder="Item Name" required>
@@ -37,7 +46,8 @@
         Upcoming:'代辦項目',
         Finish:'完成項目',
         add:'add...',
-        items:[]
+        items:[],
+        Finishitems:[],
       }
     },
     created(){
@@ -45,9 +55,12 @@
       this.items = items
     },
     methods:{
-      newfunction: function(index){
+      finishHandler: function(){
+          
+      },
+      deletefunction: function(index){
           const newItems = this.items.filter((item,currentIndex)=>{
-            return index != currentIndex   
+            return index != currentIndex
           })
           this.items = newItems;
           localStorage.setItem('items', JSON.stringify(newItems));
@@ -63,13 +76,21 @@
         };
         this.items.push(item); 
         localStorage.setItem('items', JSON.stringify(this.items));
-        console.log( JSON.stringify(this.items));
         from.reset();
       },
-      
       toggleDone :function (index){
         this.items[index].done = !this.items[index].done;
-        localStorage.setItem('items', JSON.stringify(this.items));
+        
+        const handlerItems = this.items.filter((items,currentIndex)=>{
+          return index != currentIndex
+        })
+        const checkedItems = this.items.filter((items,currentIndex)=>{
+          return currentIndex === index
+        })
+        this.Finishitems.push(checkedItems[0])
+        console.log(this.Finishitems)
+        this.items = handlerItems
+        //localStorage.setItem('items', JSON.stringify(this.items));
       },
       
     }
