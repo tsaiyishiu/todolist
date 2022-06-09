@@ -4,7 +4,7 @@
 
     <div class="wrapper">
       <h2>{{ title }}</h2>
-      <p>{{ Upcoming }}</p>
+      <p>{{ upComing }}</p>
       <ul class="plates" v-if="items.length === 0">
         <li>{{ add }}</li>
       </ul>
@@ -14,20 +14,20 @@
               :checked="item.done" />
             <label v-on:click="toggleDone(index)"
               :for="'item'+index">{{item.message}}</label>
-            <button v-on:click='deletefunction(index)'>X</button>
+            <button v-on:click='deleteItem(index)'>X</button>
         </li>
       </ul>
-      <p>{{ Finish }}</p>
+      <p>{{ finish }}</p>
       <ul class="plates">
         <li>{{ add }}</li>
       </ul>
       <ul class="plates">
-        <li v-for="(item,index) in Finishitems" :key="index + 'Finishitems'">
+        <li v-for="(item,index) in finishItems" :key="index + 'finishItems'">
            <input type="checkbox" :data-index="'data-index'+index" :id="'items'+index"
               :checked="item.done" />
             <label v-on:click="finishHandler()"
               :for="'item'+index">{{item.message}}</label>
-            <button v-on:click='deletefunction(index)'>X</button>
+            <button v-on:click='deleteFinish(index)'>X</button>
         </li>
       </ul>
       <form class="add-items" v-on:submit= "addItem($event)">
@@ -43,11 +43,11 @@
     data(){
       return{
         title:'TO DO list',
-        Upcoming:'代辦項目',
-        Finish:'完成項目',
+        upComing:'代辦項目',
+        finish:'完成項目',
         add:'add...',
         items:[],
-        Finishitems:[],
+        finishItems:[],
       }
     },
     created(){
@@ -55,16 +55,18 @@
       this.items = items
     },
     methods:{
-      finishHandler: function(){
-          
+      deleteFinish: function(index){
+          const deleteFinishitem = this.finishItems.filter((item,currentIndex)=>{
+            return index != currentIndex
+          })
+          this.finishItems = deleteFinishitem
       },
-      deletefunction: function(index){
+      deleteItem: function(index){
           const newItems = this.items.filter((item,currentIndex)=>{
             return index != currentIndex
           })
           this.items = newItems;
           localStorage.setItem('items', JSON.stringify(newItems));
-        
       },
       addItem: function(e) {
         e.preventDefault();
@@ -87,8 +89,8 @@
         const checkedItems = this.items.filter((items,currentIndex)=>{
           return currentIndex === index
         })
-        this.Finishitems.push(checkedItems[0])
-        console.log(this.Finishitems)
+        this.finishItems.push(checkedItems[0])
+        console.log(this.finishItems)
         this.items = handlerItems
         //localStorage.setItem('items', JSON.stringify(this.items));
       },
