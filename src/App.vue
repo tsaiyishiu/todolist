@@ -52,23 +52,26 @@
     },
     created(){
       const items = JSON.parse(localStorage.getItem('items')) || []
+      const finishItems = JSON.parse(localStorage.getItem('items2')) || []
       this.items = items
+      this.finishItems = finishItems
     },
     methods:{
-      deleteFinish: function(index){
+      deleteFinish: function(index){ //刪除完成項目的功能
           const deleteFinishitem = this.finishItems.filter((item,currentIndex)=>{
             return index != currentIndex
           })
           this.finishItems = deleteFinishitem
+          localStorage.setItem('items', JSON.stringify(deleteFinishitem));
       },
-      deleteItem: function(index){
+      deleteItem: function(index){ //刪除代辦事項的功能
           const newItems = this.items.filter((item,currentIndex)=>{
             return index != currentIndex
           })
           this.items = newItems;
           localStorage.setItem('items', JSON.stringify(newItems));
       },
-      addItem: function(e) {
+      addItem: function(e) { //增加代辦事項功能
         e.preventDefault();
         let from = document.querySelector('.add-items')
         const text = (from.querySelector('[name=item]')).value;
@@ -81,18 +84,22 @@
         from.reset();
       },
       toggleDone :function (index){
-        this.items[index].done = !this.items[index].done;
+        //this.items[index].done = !this.items[index].done;
         
-        const handlerItems = this.items.filter((items,currentIndex)=>{
+        const handlerItems = this.items.filter((items,currentIndex)=>{ //勾選時代辦事項要消失
           return index != currentIndex
         })
-        const checkedItems = this.items.filter((items,currentIndex)=>{
-          return currentIndex === index
+        const checkedItems = this.items.filter((items,currentIndex)=>{  //勾選時代辦事項跑到完成項目
+          return index === currentIndex
         })
         this.finishItems.push(checkedItems[0])
         console.log(this.finishItems)
         this.items = handlerItems
-        //localStorage.setItem('items', JSON.stringify(this.items));
+         
+        localStorage.setItem('items', JSON.stringify(this.items));
+        localStorage.setItem('items2', JSON.stringify(this.finishItems));
+        //this.finishItems = 
+        //localStorage.setItem('items2', JSON.stringify());
       },
       
     }
