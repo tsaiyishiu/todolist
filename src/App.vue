@@ -25,13 +25,15 @@
         <li v-for="(item,index) in finishItems" :key="index + 'finishItems'">
            <input type="checkbox" :data-index="'data-index'+index" :id="'items'+index"
               :checked="item.done" />
-            <label v-on:click="finishHandler()"
+            <label v-on:click="reductionHandler(index)"
               :for="'item'+index">{{item.message}}</label>
             <button v-on:click='deleteFinish(index)'>X</button>
         </li>
       </ul>
       <form class="add-items" v-on:submit= "addItem($event)">
-        <input type="text" name="item" placeholder="Item Name" required>
+        <input type="text" name="item" placeholder="Item Name" required
+          v-model="inputValue" @change="ghj()"
+        >
         <input type="submit" value="+項目">
       </form>
     </div>
@@ -48,58 +50,78 @@
         add:'add...',
         items:[],
         finishItems:[],
+        inputValue: '',
       }
     },
     created(){
       const items = JSON.parse(localStorage.getItem('items')) || []
-      const finishItems = JSON.parse(localStorage.getItem('items2')) || []
+      const finishItems = JSON.parse(localStorage.getItem('finishItems')) || []
       this.items = items
       this.finishItems = finishItems
     },
     methods:{
-      deleteFinish: function(index){ //刪除完成項目的功能
+      reductionHandler: function(index){
+        /**勾選時刪除完成項目功能 */
+         const handlerItems = this.finishItems.filter((items,currentIndex)=>{
+          return index != currentIndex
+        })
+        /**點選時完成項目跑回代辦項目 */
+        const reductionItem = this.finishItems.filter((items,currentIndex)=>{  
+          return index === currentIndex
+        })
+        let reductionClick = reductionItem[0]
+        reductionClick.done = !reductionClick.done
+        this.items.push(reductionClick)
+        this.finishItems = handlerItems
+         localStorage.setItem('items', JSON.stringify(this.items)); 
+        localStorage.setItem('finishItems', JSON.stringify(this.finishItems));
+      },
+      /**  刪除完成項目的功能*/
+      deleteFinish: function(index){ 
           const deleteFinishitem = this.finishItems.filter((item,currentIndex)=>{
             return index != currentIndex
           })
           this.finishItems = deleteFinishitem
           localStorage.setItem('items', JSON.stringify(deleteFinishitem));
       },
-      deleteItem: function(index){ //刪除代辦事項的功能
+      /** 刪除代辦事項的功能 */
+      deleteItem: function(index){ 
           const newItems = this.items.filter((item,currentIndex)=>{
             return index != currentIndex
           })
           this.items = newItems;
           localStorage.setItem('items', JSON.stringify(newItems));
       },
-      addItem: function(e) { //增加代辦事項功能
+      /** 增加代辦事項功能 */
+      addItem: function(e) {
         e.preventDefault();
-        let from = document.querySelector('.add-items')
-        const text = (from.querySelector('[name=item]')).value;
+        // let from = document.querySelector('.add-items')
+        // const text = (from.querySelector('[name=item]')).value;
+        const text = this.inputValue;
         const item = {
           message: text,
           done: false 
         };
         this.items.push(item); 
         localStorage.setItem('items', JSON.stringify(this.items));
-        from.reset();
+        // from.reset();
+        this.inputValue = ''
       },
       toggleDone :function (index){
-        //this.items[index].done = !this.items[index].done;
-        
-        const handlerItems = this.items.filter((items,currentIndex)=>{ //勾選時代辦事項要消失
+        /** 勾選時代辦事項要消失 */
+        const handlerItems = this.items.filter((items,currentIndex)=>{
           return index != currentIndex
         })
-        const checkedItems = this.items.filter((items,currentIndex)=>{  //勾選時代辦事項跑到完成項目
+        /**勾選時代辦事項跑到完成項目 */
+        const checkedItems = this.items.filter((items,currentIndex)=>{  
           return index === currentIndex
         })
-        this.finishItems.push(checkedItems[0])
-        console.log(this.finishItems)
+        let clickedItem = checkedItems[0]
+        clickedItem.done = !clickedItem.done
+        this.finishItems.push(clickedItem)
         this.items = handlerItems
-         
-        localStorage.setItem('items', JSON.stringify(this.items));
-        localStorage.setItem('items2', JSON.stringify(this.finishItems));
-        //this.finishItems = 
-        //localStorage.setItem('items2', JSON.stringify());
+        localStorage.setItem('items', JSON.stringify(this.items)); 
+        localStorage.setItem('finishItems', JSON.stringify(this.finishItems));
       },
       
     }
